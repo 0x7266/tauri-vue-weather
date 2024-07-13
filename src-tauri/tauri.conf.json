@@ -19,9 +19,12 @@
     },
     "windows": [
       {
+        "center": true,
+        "decorations": false,
+        "height": 600,
         "title": "tauri_vue_weather",
-        "width": 800,
-        "height": 600
+        "transparent": true,
+        "width": 300
       }
     ],
     "security": {
