@@ -3,36 +3,36 @@
 
 use std::env;
 
-use models::Response;
+use models::{Coord, Data, Geo};
 
 mod models;
 
 #[tauri::command]
-fn get_data(city: &str) -> Response {
-    let response = reqwest::blocking::get(format!(
+fn get_data(city: &str) -> Data {
+    let geo = reqwest::blocking::get(format!(
         "https://api.openweathermap.org/data/2.5/weather?q={}&appid={}&units=metric",
         city,
-        env::var("WEATHER_API_KEY").expect("Error reading the API key")
+        env::var("LAT_LON_KEY").expect("Error reading the API key")
     ));
-    match response {
+    match geo {
         Ok(r) => {
-            let Response {
-                coord,
-                main,
-                name,
-                timezone,
-                visibility,
-                wind,
-            } = r.json().unwrap();
+            let Geo {
+                coord: Coord { lat, lon },
+            } = r
+                .json::<Geo>()
+                .expect("Error while parsing response to JSON");
 
-            Response {
-                coord,
-                main,
-                name,
-                timezone,
-                visibility,
-                wind,
-            }
+            let data = reqwest::blocking::get::<String>(format!(
+                "https://api.openweathermap.org/data/2.5/forecast?lat={}&lon={}&cnt=7&appid={}",
+                lat,
+                lon,
+                env::var("FORECAST_KEY").expect("Error while reading the forecast key")
+            ))
+            .unwrap()
+            .json::<Data>()
+            .unwrap();
+
+            data
         }
         Err(_e) => todo!(),
     }

@@ -15,6 +15,9 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "window": {
+        "startDragging": true
       }
     },
     "windows": [
@@ -22,6 +25,7 @@
         "center": true,
         "decorations": false,
         "height": 600,
+        "resizable": false,
         "title": "tauri_vue_weather",
         "transparent": true,
         "width": 300

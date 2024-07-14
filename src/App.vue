@@ -2,21 +2,22 @@
 import "./index.css"
 import { Ref, ref } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
-import { Response } from "./lib/types"
+import { Data } from "./lib/types"
 
-const data: Ref<Response | null> = ref(null);
+const data: Ref<Data | null> = ref(null);
 const city_name = ref("");
 
 async function get_data() {
   data.value = await invoke("get_data", { city: city_name.value });
+  console.log(data.value)
 }
 </script>
 
 <template>
-  <div class="flex flex-col w-[300px] rounded-xl gap-12 bg-white shadow-2xl">
-    <div
+  <div data-tauri-drag-region class="flex flex-col w-[300px] rounded-xl gap-12 bg-white shadow-2xl">
+    <div data-tauri-drag-region
       class="font-bold bg-[url('https://images.unsplash.com/photo-1589066724013-06f34f2cc17c?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NzgyOTAyNTM&ixlib=rb-4.0.3&q=80')] bg-cover bg-center grayscale hover:grayscale-0 ease-in-out transition-all text-white rounded-t-md">
-      <div class="flex justify-between  p-3">
+      <div data-tauri-drag-region class="flex justify-between p-3">
         <div class="left flex items-center gap-1">
           <span class="material-symbols-outlined icon-small">
             more_horiz
@@ -38,9 +39,9 @@ async function get_data() {
           </span>
         </div>
       </div>
-      <div class="flex flex-col items-center">
+      <div data-tauri-drag-region class="flex flex-col items-center">
         <div class="flex items-center gap-2 text-2xl">
-          <span class="local">Miami, Florida</span>
+          <span class="local">{{ data ? data.name : null }}</span>
           <span class="material-symbols-outlined relative top-[5px]">
             expand_more
           </span>
@@ -110,7 +111,7 @@ async function get_data() {
     </div>
   </div>
 
-  <p v-if="data">{{ data.main.temp }}</p>
+  <p v-if="data">{{ data.city.name }}</p>
 </template>
 
 <style scoped></style>
