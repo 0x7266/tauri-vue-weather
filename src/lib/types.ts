@@ -29,7 +29,7 @@ interface Weather {
   main: string;
 }
 
-interface Day {
+export interface Day {
   dt_txt: string;
   main: Main;
   weather: Weather[]; // Array of Weather objects

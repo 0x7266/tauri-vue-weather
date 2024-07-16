@@ -3,13 +3,13 @@ import "./index.css"
 import { Ref, ref } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Data } from "./lib/types"
+import Forecast from "./components/Forecast.vue"
 
 const data: Ref<Data | null> = ref(null);
 const city_name = ref("");
 
 async function get_data() {
   data.value = await invoke("get_data", { city: city_name.value });
-  console.log(data.value)
 }
 </script>
 
@@ -41,21 +41,26 @@ async function get_data() {
       </div>
       <div data-tauri-drag-region class="flex flex-col items-center">
         <div class="flex items-center gap-2 text-2xl">
-          <span class="local">{{ data ? data.name : null }}</span>
-          <span class="material-symbols-outlined relative top-[5px]">
+          <span class="local">{{ data ? data.city.name : null }}</span>
+          <!--          <span class="material-symbols-outlined relative top-[5px]">
             expand_more
-          </span>
+            </span>
+          -->
         </div>
         <div class="flex flex-col">
           <span class="text-5xl after:content-['°'] after:absolute font-extrabold">23</span>
-          <span class="font-normal">Cloudy</span>
+          <span class="font-normal text-center">{{ data ? data.list[0].weather[0].main : null }}</span>
         </div>
-        <span class="material-symbols-outlined text-3xl">
+        <!--        <span class="material-symbols-outlined text-3xl">
           more_horiz
-        </span>
+          </span>
+        -->
       </div>
     </div>
-    <div class="flex flex-col w-5/6 self-center text-gray-500">
+    <div v-if="data" v-for="forecast in data.list">
+      <Forecast :forecast="forecast" />
+    </div>
+    <!--    <div class="flex flex-col w-5/6 self-center text-gray-500">
       <div class="flex justify-between text-2xl hover:scale-110 transition-all ease-in-out duration-[100ms] day">
         <span class="font-light">Sunday</span>
         <div class="flex items-center gap-2">
@@ -102,6 +107,7 @@ async function get_data() {
         </div>
       </div>
     </div>
+-->
     <div
       class="text-center font-semibold bg-gray-500 rounded-b-md p-5 text-xl text-white hover:bg-gray-700 transition-all ease-in-out">
       <form class="row" @submit.prevent="get_data">
