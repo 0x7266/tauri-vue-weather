@@ -34,8 +34,9 @@ async function handleSearch() {
 </script>
 
 <template>
-  <form @submit.prevent="handleSearch" class="flex flex-col gap-1 p-2">
-    <input name="query" @input="handleInput" v-model="search.query" class="px-3 py-2 text-lg border border-3 rounded" />
+  <form @submit.prevent="handleSearch" class="relative w-full flex flex-col gap-1 p-2">
+    <input name="query" @input="handleInput" v-model="search.query"
+      class="w-full px-3 py-2 text-lg border border-3 rounded" />
     <Sugestions @search="async (query: string) => {
       search.query = query
       await handleSearch()
