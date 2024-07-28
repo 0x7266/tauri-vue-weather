@@ -5,14 +5,17 @@ import { Autocomplete, Data } from '../lib/types';
 import { initialDataPlaceholder } from "../lib/utils"
 import Sugestions from "./Sugestions.vue"
 
-const search = reactive<{ query: string, timeout: any, sugestions: Autocomplete[] }>({
+const search = reactive<{ query: string, timeout: any, sugestions: Autocomplete[], loading: boolean }>({
   query: '',
   timeout: undefined,
   sugestions: [],
+  loading: false,
 })
 let data = reactive<Data>(initialDataPlaceholder)
+let input: string;
 
 async function handleInput() {
+  search.query = input
   console.log(search.query)
   clearTimeout(search.timeout)
   search.timeout = setTimeout(async () => {
@@ -26,21 +29,22 @@ async function handleInput() {
 }
 
 async function handleSearch() {
+  search.loading = true
   if (search.query !== "") {
     const response = await invoke<any>("get_data", { query: search.query });
     data = await response
   }
+  search.loading = false
 }
 </script>
 
 <template>
   <form @submit.prevent="handleSearch" class="relative w-full flex flex-col gap-1 p-2">
-    <input name="query" @input="handleInput" v-model="search.query"
-      class="w-full px-3 py-2 text-lg border border-3 rounded" />
+    <input name="query" @input="handleInput" v-model="input" class="w-full px-3 py-2 text-lg border border-3 rounded" />
     <Sugestions @search="async (query: string) => {
       search.query = query
       await handleSearch()
-    }" :sugestions="search.sugestions" />
+    }" :loading="search.loading" :sugestions="search.sugestions" />
   </form>
   <div v-if="data != reactive(initialDataPlaceholder)" class="flex flex-col items-center border-t-2 p-2 font-semibold">
     <p class="">
