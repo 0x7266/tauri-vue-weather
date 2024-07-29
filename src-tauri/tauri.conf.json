@@ -24,7 +24,7 @@
       {
         "center": true,
         "decorations": false,
-        "height": 600,
+        "height": 500,
         "resizable": false,
         "title": "tauri_vue_weather",
         "transparent": true,
